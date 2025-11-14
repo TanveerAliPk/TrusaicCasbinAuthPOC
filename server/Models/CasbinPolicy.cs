@@ -7,6 +7,7 @@ namespace server.Models
         public int Id { get; set; }
         public string? PolicyType { get; set; }
         public string? Subject { get; set; }
+        public string? Domain { get; set; }
         public string? Object { get; set; }
         public string? Action { get; set; }
         public string? Effect { get; set; }
