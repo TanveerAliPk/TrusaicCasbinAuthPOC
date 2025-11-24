@@ -1,7 +1,6 @@
+using Casbin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using server.Data;
 using server.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,88 +12,62 @@ namespace server.Controllers
     [Authorize(Roles = "admin")]
     public class CasbinPoliciesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IEnforcer _enforcer;
 
-        public CasbinPoliciesController(ApplicationDbContext context)
+        public CasbinPoliciesController(IEnforcer enforcer)
         {
-            _context = context;
+            _enforcer = enforcer;
         }
 
         // GET: api/casbinpolicies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CasbinPolicy>>> GetCasbinPolicies()
+        public async Task<ActionResult<IEnumerable<List<string>>>> GetPolicies()
         {
-            return await _context.CasbinPolicies.ToListAsync();
-        }
-
-        // GET: api/casbinpolicies/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CasbinPolicy>> GetCasbinPolicy(int id)
-        {
-            var casbinPolicy = await _context.CasbinPolicies.FindAsync(id);
-
-            if (casbinPolicy == null)
-            {
-                return NotFound();
-            }
-
-            return casbinPolicy;
+            // Returns raw policies from the enforcer
+            return Ok(_enforcer.GetPolicy());
         }
 
         // POST: api/casbinpolicies
         [HttpPost]
-        public async Task<ActionResult<CasbinPolicy>> PostCasbinPolicy(CasbinPolicy casbinPolicy)
+        public async Task<ActionResult> AddPolicy([FromBody] PolicyRequest request)
         {
-            _context.CasbinPolicies.Add(casbinPolicy);
-            await _context.SaveChangesAsync();
+            if (string.IsNullOrEmpty(request.Subject) || string.IsNullOrEmpty(request.Object) || string.IsNullOrEmpty(request.Action))
+            {
+                return BadRequest("Subject, Object, and Action are required.");
+            }
 
-            return CreatedAtAction("GetCasbinPolicy", new { id = casbinPolicy.Id }, casbinPolicy);
+            // Using domain if present, otherwise assume 3-tuple (or handle based on model)
+            bool result;
+            if (!string.IsNullOrEmpty(request.Domain))
+            {
+                result = await _enforcer.AddPolicyAsync(request.Subject, request.Domain, request.Object, request.Action);
+            }
+            else
+            {
+                 // If model expects domain (4 args) but user sent empty, we might need to send a placeholder or fail.
+                 // Given our new model `p = sub, dom, obj, act`, we MUST provide 4 arguments.
+                 // If domain is empty, we pass it as empty string or "global".
+                 result = await _enforcer.AddPolicyAsync(request.Subject, request.Domain ?? "", request.Object, request.Action);
+            }
+
+            if (result)
+            {
+                return Ok(new { message = "Policy added successfully." });
+            }
+            return Conflict(new { message = "Policy already exists." });
         }
 
-        // PUT: api/casbinpolicies/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCasbinPolicy(int id, CasbinPolicy casbinPolicy)
+        // DELETE: api/casbinpolicies
+        [HttpDelete]
+        public async Task<ActionResult> RemovePolicy([FromBody] PolicyRequest request)
         {
-            if (id != casbinPolicy.Id)
+            bool result = await _enforcer.RemovePolicyAsync(request.Subject, request.Domain ?? "", request.Object, request.Action);
+
+            if (result)
             {
-                return BadRequest();
+                return Ok(new { message = "Policy removed successfully." });
             }
-
-            _context.Entry(casbinPolicy).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.CasbinPolicies.Any(e => e.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/casbinpolicies/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCasbinPolicy(int id)
-        {
-            var casbinPolicy = await _context.CasbinPolicies.FindAsync(id);
-            if (casbinPolicy == null)
-            {
-                return NotFound();
-            }
-
-            _context.CasbinPolicies.Remove(casbinPolicy);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return NotFound(new { message = "Policy not found." });
         }
     }
 }
