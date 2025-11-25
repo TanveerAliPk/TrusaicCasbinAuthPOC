@@ -1,1 +1,34 @@
-<p>policies works!</p>
+<div class="container">
+  <h2>Policy Management</h2>
+
+  <div class="form-group">
+    <h3>Add New Policy</h3>
+    <input [(ngModel)]="newPolicy.Subject" placeholder="Subject (e.g. alice)" />
+    <input [(ngModel)]="newPolicy.Domain" placeholder="Domain (e.g. domain1)" />
+    <input [(ngModel)]="newPolicy.Object" placeholder="Object (e.g. data1)" />
+    <input [(ngModel)]="newPolicy.Action" placeholder="Action (e.g. read)" />
+    <button (click)="addPolicy()">Add Policy</button>
+  </div>
+
+  <h3>Existing Policies</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Domain</th>
+        <th>Object</th>
+        <th>Action</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of policies">
+        <td>{{p[0]}}</td>
+        <td>{{p[1]}}</td>
+        <td>{{p[2]}}</td>
+        <td>{{p[3]}}</td>
+        <td><button (click)="deletePolicy(p)">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

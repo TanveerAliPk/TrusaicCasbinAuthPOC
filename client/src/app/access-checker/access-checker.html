@@ -1,1 +1,15 @@
-<p>access-checker works!</p>
+<div class="container">
+  <h2>Access Checker (PDP)</h2>
+
+  <div class="form-group">
+    <input [(ngModel)]="request.Subject" placeholder="Subject (Optional if logged in)" />
+    <input [(ngModel)]="request.Domain" placeholder="Domain (e.g. domain1)" />
+    <input [(ngModel)]="request.Object" placeholder="Object (e.g. data1)" />
+    <input [(ngModel)]="request.Action" placeholder="Action (e.g. read)" />
+    <button (click)="checkAccess()">Check Access</button>
+  </div>
+
+  <div *ngIf="result !== null" [class.allowed]="result" [class.denied]="!result" class="result-box">
+    <h3>Access {{ result ? 'ALLOWED' : 'DENIED' }}</h3>
+  </div>
+</div>

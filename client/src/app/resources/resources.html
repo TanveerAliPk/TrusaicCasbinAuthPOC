@@ -1,1 +1,19 @@
-<p>resources works!</p>
+<div class="container">
+  <h2>Resources</h2>
+
+  <div class="form-group">
+    <h3>Add Resource</h3>
+    <input [(ngModel)]="newResource.name" placeholder="Name" />
+    <input [(ngModel)]="newResource.resourceType" placeholder="Type" />
+    <input [(ngModel)]="newResource.department" placeholder="Department" />
+    <input [(ngModel)]="newResource.classification" placeholder="Classification" />
+    <button (click)="addResource()">Create Resource</button>
+  </div>
+
+  <h3>Resource List</h3>
+  <ul>
+    <li *ngFor="let r of resources">
+      <strong>{{r.name}}</strong> ({{r.resourceType}}) - {{r.department}} [{{r.classification}}]
+    </li>
+  </ul>
+</div>
