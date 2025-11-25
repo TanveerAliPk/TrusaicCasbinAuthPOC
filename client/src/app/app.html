@@ -1,10 +1,41 @@
-<nav>
-  <ul>
-    <li><a routerLink="/dashboard">Dashboard</a></li>
-    <li><a routerLink="/policies">Policies</a></li>
-    <li><a routerLink="/resources">Resources</a></li>
-    <li><a routerLink="/access-checker">Access Checker</a></li>
-  </ul>
-</nav>
+<div class="app-container">
+  <header>
+    <h1>Auth Admin Module</h1>
+    <div *ngIf="user" class="user-info">
+      Welcome, {{user.Name}} ({{user.Role}})
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
 
-<router-outlet />
+  <main>
+    <div *ngIf="!user" class="login-container">
+      <h2>Login</h2>
+      <div class="form-group">
+        <label>Name:</label>
+        <input [(ngModel)]="loginData.Name" />
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input [(ngModel)]="loginData.Email" />
+      </div>
+      <div class="form-group">
+        <label>Role:</label>
+        <input [(ngModel)]="loginData.Role" />
+      </div>
+      <button (click)="login()">Sign In</button>
+    </div>
+
+    <div *ngIf="user" class="authenticated-view">
+      <nav>
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/policies" routerLinkActive="active">Policies</a>
+        <a routerLink="/resources" routerLinkActive="active">Resources</a>
+        <a routerLink="/access-checker" routerLinkActive="active">Access Checker</a>
+      </nav>
+
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </main>
+</div>

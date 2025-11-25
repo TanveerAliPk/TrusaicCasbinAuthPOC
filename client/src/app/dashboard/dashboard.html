@@ -1,1 +1,26 @@
-<p>dashboard works!</p>
+<div class="container">
+  <div class="card" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); color: white;">
+    <h2>Welcome to Auth Admin Module</h2>
+    <p>Manage your centralized authorization policies with ease.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    <div class="card">
+      <h3>Policy Management</h3>
+      <p style="color: var(--text-light);">Define who can access what. Create RBAC and ABAC rules dynamically.</p>
+      <button class="secondary" routerLink="/policies">Manage Policies</button>
+    </div>
+
+    <div class="card">
+      <h3>Resource Registry</h3>
+      <p style="color: var(--text-light);">Register new resources, assign classifications, and manage ownership.</p>
+      <button class="secondary" routerLink="/resources">View Resources</button>
+    </div>
+
+    <div class="card">
+      <h3>Access Validator</h3>
+      <p style="color: var(--text-light);">Test your policies in real-time using the Policy Decision Point (PDP).</p>
+      <button class="secondary" routerLink="/access-checker">Check Access</button>
+    </div>
+  </div>
+</div>

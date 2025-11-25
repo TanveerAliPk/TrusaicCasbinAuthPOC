@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using server.Models;
+using Casbin.Persist.Adapter.EFCore;
+using Casbin.Persist.Adapter.EFCore.Entities;
 
 namespace server.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : CasbinDbContext<int>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

@@ -1,1 +1,39 @@
-<p>access-checker works!</p>
+<div class="container" style="max-width: 600px; margin: 0 auto;">
+  <div class="card">
+    <h2>Access Checker (PDP)</h2>
+    <p style="color: var(--text-light); margin-bottom: 1.5rem;">Simulate an access request to test your policies.</p>
+
+    <div class="form-group">
+      <label>Subject</label>
+      <input [(ngModel)]="request.Subject" placeholder="User (Leave empty to use current user)" />
+    </div>
+    <div class="form-group">
+      <label>Domain</label>
+      <input [(ngModel)]="request.Domain" placeholder="Tenant/Domain" />
+    </div>
+    <div class="form-group">
+      <label>Object</label>
+      <input [(ngModel)]="request.Object" placeholder="Resource" />
+    </div>
+    <div class="form-group">
+      <label>Action</label>
+      <input [(ngModel)]="request.Action" placeholder="Operation (e.g. read)" />
+    </div>
+
+    <button (click)="checkAccess()" style="width: 100%; margin-top: 1rem;">Check Permissions</button>
+  </div>
+
+  <div *ngIf="result !== null" class="card"
+       [style.border-left]="result ? '5px solid var(--success)' : '5px solid var(--danger)'"
+       style="text-align: center; padding: 2rem;">
+    <h3 [style.color]="result ? 'var(--success)' : 'var(--danger)'" style="font-size: 1.5rem; margin: 0;">
+      {{ result ? 'ACCESS GRANTED' : 'ACCESS DENIED' }}
+    </h3>
+    <p style="color: var(--text-light);">
+      {{request.Subject || 'Current User'}}
+      {{ result ? 'can' : 'cannot' }}
+      <strong>{{request.Action}}</strong>
+      on <strong>{{request.Object}}</strong>
+    </p>
+  </div>
+</div>
