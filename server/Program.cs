@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Casbin;
+using Casbin.Persist.Adapter.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using server.Data;
@@ -9,6 +11,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configure Casbin
+builder.Services.AddSingleton<IEnforcer>(sp =>
+{
+    var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+        .UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .Options;
+
+    // Create a new context specifically for the adapter to avoid threading issues with the scoped HTTP context
+    var dbContext = new ApplicationDbContext(contextOptions);
+    var adapter = new EFCoreAdapter<int>(dbContext);
+
+    // Load model from file
+    var enforcer = new Enforcer("casbin_model.conf", adapter);
+
+    // Load policies from DB
+    enforcer.LoadPolicy();
+
+    return enforcer;
+});
 
 builder.Services.AddControllers();
 
