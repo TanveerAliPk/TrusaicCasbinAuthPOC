@@ -1,1 +1,48 @@
-<p>policies works!</p>
+<div class="container">
+  <div class="card">
+    <h2>Add New Policy</h2>
+    <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+      <div class="form-group">
+        <label>Subject</label>
+        <input [(ngModel)]="newPolicy.Subject" placeholder="e.g. alice" />
+      </div>
+      <div class="form-group">
+        <label>Domain</label>
+        <input [(ngModel)]="newPolicy.Domain" placeholder="e.g. domain1" />
+      </div>
+      <div class="form-group">
+        <label>Object</label>
+        <input [(ngModel)]="newPolicy.Object" placeholder="e.g. data1" />
+      </div>
+      <div class="form-group">
+        <label>Action</label>
+        <input [(ngModel)]="newPolicy.Action" placeholder="e.g. read" />
+      </div>
+    </div>
+    <button (click)="addPolicy()">Add Policy</button>
+  </div>
+
+  <div class="card">
+    <h3>Existing Policies</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Domain</th>
+          <th>Object</th>
+          <th>Action</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of policies">
+          <td><span class="badge" style="background:#e0e7ff; color:#3730a3;">{{p[0]}}</span></td>
+          <td>{{p[1]}}</td>
+          <td>{{p[2]}}</td>
+          <td><span class="badge" style="background:#f3f4f6; color:#1f2937; border: 1px solid #d1d5db;">{{p[3]}}</span></td>
+          <td><button class="danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" (click)="deletePolicy(p)">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

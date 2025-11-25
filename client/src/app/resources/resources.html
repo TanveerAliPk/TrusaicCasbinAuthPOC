@@ -1,1 +1,51 @@
-<p>resources works!</p>
+<div class="container">
+  <div class="card">
+    <h2>Create Resource</h2>
+    <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+      <div class="form-group">
+        <label>Name</label>
+        <input [(ngModel)]="newResource.name" placeholder="Resource Name" />
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <input [(ngModel)]="newResource.resourceType" placeholder="e.g. File, Report" />
+      </div>
+      <div class="form-group">
+        <label>Department</label>
+        <input [(ngModel)]="newResource.department" placeholder="e.g. HR, IT" />
+      </div>
+      <div class="form-group">
+        <label>Classification</label>
+        <input [(ngModel)]="newResource.classification" placeholder="e.g. Confidential" />
+      </div>
+    </div>
+    <button (click)="addResource()">Create Resource</button>
+  </div>
+
+  <div class="card">
+    <h3>Resource List</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Department</th>
+          <th>Classification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of resources">
+          <td><strong>{{r.name}}</strong></td>
+          <td>{{r.resourceType}}</td>
+          <td>{{r.department}}</td>
+          <td>
+            <span class="badge" [style.background]="r.classification === 'Confidential' ? '#fee2e2' : '#d1fae5'"
+                  [style.color]="r.classification === 'Confidential' ? '#991b1b' : '#065f46'">
+              {{r.classification}}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
