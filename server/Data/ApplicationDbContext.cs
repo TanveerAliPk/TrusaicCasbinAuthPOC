@@ -17,5 +17,7 @@ namespace server.Data
         public DbSet<UserAttribute> UserAttributes { get; set; }
         public DbSet<CasbinPolicy> CasbinPolicies { get; set; }
         public DbSet<Resource> Resources { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }
